@@ -22,7 +22,7 @@ var statusCmd = &cobra.Command{
 	Short: "Check message status",
 	Long:  "Check if a message has been processed on the destination chain",
 	Example: `  messenger-cli status \
-    --rpc https://mumbai.polygonscan.com/... \
+    --rpc https://Amoy.polygonscan.com/... \
     --contract 0x5678... \
     --hash 0xabcd...`,
 	RunE: runStatus,
