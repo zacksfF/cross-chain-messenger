@@ -24,11 +24,11 @@ var sendCmd = &cobra.Command{
 	Short: "Send a cross-chain message",
 	Long:  "Send a message from one blockchain to another",
 	Example: `  messenger-cli send \
-    --rpc https://sepolia.infura.io/v3/YOUR_KEY \
+    --rpc https://sepolia // ky
     --contract 0x1234... \
     --key YOUR_PRIVATE_KEY \
     --dest-chain 80001 \
-    --message "Hello Mumbai!"`,
+    --message "Hello!"`,
 	RunE: runSend,
 }
 
