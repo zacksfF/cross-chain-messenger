@@ -33,7 +33,7 @@ The project comprises three main components:
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/cross-chain-messenger.git
+git https://github.com/zacksfF/cross-chain-messenger.git
 cd cross-chain-messenger
 ```
 
