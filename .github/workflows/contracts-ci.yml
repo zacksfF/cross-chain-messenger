@@ -1,0 +1,90 @@
+name: Contracts CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'contracts/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'contracts/**'
+
+jobs:
+  test:
+    name: Test Contracts
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Run Forge build
+        working-directory: contracts
+        run: |
+          forge --version
+          forge build --sizes
+
+      - name: Run Forge tests
+        working-directory: contracts
+        run: |
+          forge test -vvv
+
+      - name: Run Forge coverage
+        working-directory: contracts
+        run: |
+          forge coverage --report lcov
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v3
+        with:
+          files: ./contracts/lcov.info
+          flags: contracts
+
+  lint:
+    name: Lint Contracts
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Run Solhint
+        working-directory: contracts
+        run: |
+          npm install -g solhint
+          solhint 'src/**/*.sol'
+
+      - name: Check formatting
+        working-directory: contracts
+        run: |
+          forge fmt --check
+
+  gas-report:
+    name: Gas Report
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Generate gas report
+        working-directory: contracts
+        run: |
+          forge test --gas-report > gas-report.txt
+
+      - name: Upload gas report
+        uses: actions/upload-artifact@v3
+        with:
+          name: gas-report
+          path: contracts/gas-report.txt

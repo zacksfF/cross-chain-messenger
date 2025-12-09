@@ -1,0 +1,16 @@
+.git
+.github
+*.md
+*.log
+.env
+.env.*
+!.env.example
+node_modules
+data/
+*.db
+*.test
+coverage.out
+*.swp
+*.swo
+*~
+.DS_Store

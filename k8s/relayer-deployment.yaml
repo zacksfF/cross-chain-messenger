@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: relayer
+  namespace: cross-chain
+  labels:
+    app: relayer
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: relayer
+  template:
+    metadata:
+      labels:
+        app: relayer
+    spec:
+      containers:
+      - name: relayer
+        image: yourdockerhub/cross-chain-relayer:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: SEPOLIA_RPC_URL
+          valueFrom:
+            secretKeyRef:
+              name: relayer-secrets
+              key: sepolia-rpc-url
+        - name: AMOY_RPC_URL
+          valueFrom:
+            secretKeyRef:
+              name: relayer-secrets
+              key: amoy-rpc-url
+        - name: RELAYER_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: relayer-secrets
+              key: private-key
+        volumeMounts:
+        - name: config
+          mountPath: /root/config.yaml
+          subPath: config.yaml
+        - name: data
+          mountPath: /root/data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 9090
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 9090
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: config
+        configMap:
+          name: relayer-config
+      - name: data
+        persistentVolumeClaim:
+          claimName: relayer-data-pvc

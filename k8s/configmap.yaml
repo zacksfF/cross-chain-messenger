@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: relayer-config
+  namespace: cross-chain
+data:
+  config.yaml: |
+    chains:
+      - name: "sepolia"
+        chain_id: 11155111
+        rpc_url: "${SEPOLIA_RPC_URL}"
+        source_contract: "0x..."
+        dest_contract: "0x..."
+        start_block: 5000000
+        confirmations: 3
+      - name: "amoy"
+        chain_id: 80002
+        rpc_url: "${AMOY_RPC_URL}"
+        source_contract: "0x..."
+        dest_contract: "0x..."
+        start_block: 1000000
+        confirmations: 5
+    relayer:
+      private_key: "${RELAYER_PRIVATE_KEY}"
+      poll_interval: "5s"
+      max_retries: 3
+      gas_limit: 300000
+      db_path: "/root/data/messages.db"

@@ -1,0 +1,54 @@
+name: CLI CI
+
+on:
+  push:
+    branches: [main, develop]
+    paths:
+      - 'cli/**'
+  pull_request:
+    branches: [main, develop]
+    paths:
+      - 'cli/**'
+
+jobs:
+  test:
+    name: Test CLI
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Run tests
+        working-directory: cli
+        run: go test -v ./...
+
+  build:
+    name: Build CLI
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+
+      - name: Build CLI
+        working-directory: cli
+        run: |
+          go build -v -o messenger-cli ./cmd/messenger-cli
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: messenger-cli-${{ matrix.os }}
+          path: cli/messenger-cli*

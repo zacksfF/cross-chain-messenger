@@ -1,0 +1,47 @@
+cross-chain-messenger/
+├── contracts/
+│   ├── src/
+│   │   ├── SourceMessenger.sol
+│   │   ├── DestinationMessenger.sol
+│   │   └── interfaces/
+│   │       └── IMessenger.sol
+│   ├── script/
+│   │   ├── Deploy.s.sol
+│   │   └── Config.s.sol
+│   ├── test/
+│   │   ├── SourceMessenger.t.sol
+│   │   └── DestinationMessenger.t.sol
+│   └── foundry.toml
+│
+├── relayer/
+│   ├── cmd/
+│   │   └── relayerd/            # main daemon
+│   │       └── main.go
+│   │
+│   ├── internal/
+│   │   ├── listener/            # watches chain events
+│   │   │   └── listener.go
+│   │   ├── executor/            # sends tx to dst chain
+│   │   │   └── executor.go
+│   │   ├── signer/              # for relayer keys
+│   │   │   └── signer.go
+│   │   ├── config/              # environment & chain config
+│   │   │   └── config.go
+│   │   └── types/               # shared structs
+│   │       └── message.go
+│   │
+│   ├── pkg/
+│   │   └── contracts/           # abigen generated bindings
+│   │       ├── source.go
+│   │       └── destination.go
+│   │
+│   ├── go.mod
+│   └── go.sum
+│
+└── cli/
+    ├── cmd/
+    │   └── messenger-cli/
+    │       ├── main.go
+    │       ├── send.go          # send cross-chain message
+    │       └── status.go        # check message status
+    └── go.mod
